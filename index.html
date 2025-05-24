@@ -83,6 +83,10 @@
 
     let transitionStarted = false;
 
+myVideo.addEventListener('play', () => {
+  transitionStarted = false;
+});
+
     myVideo.addEventListener('timeupdate', () => {
       const duration = myVideo.duration;
       const currentTime = myVideo.currentTime;
