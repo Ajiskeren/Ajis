@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ajis lapar</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: black;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    body, video {
+      width: 100vw;
+      height: 100vh;
+    }
+    video {
+      position: fixed;
+      top: 0; left: 0;
+      object-fit: contain;
+      background: black;
+      opacity: 1;
+      transition: opacity 1.5s ease-in-out;
+      z-index: 0;
+    }
+    #myVideo {
+      display: none;
+      opacity: 0;
+      z-index: 1;
+    }
+    #playButton {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      padding: 14px 28px;
+      font-size: 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: cyan;
+      color: black;
+      cursor: pointer;
+      transition: opacity 0.5s ease-in-out;
+    }
+    #playButton.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <video id="bgVideo" autoplay muted loop>
+    <source src="background.mp4" type="video/mp4" />
+  </video>
+
+  <video id="myVideo" playsinline preload="auto">
+    <source src="video.mp4" type="video/mp4" />
+  </video>
+
+  <button id="playButton">Klik</button>
+
+  <script>
+    const bgVideo = document.getElementById('bgVideo');
+    const myVideo = document.getElementById('myVideo');
+    const playButton = document.getElementById('playButton');
+
+    myVideo.load();
+
+    playButton.addEventListener('click', () => {
+      playButton.classList.add('fade-out');
+      bgVideo.style.opacity = '0';
+      myVideo.style.display = 'block';
+      requestAnimationFrame(() => {
+        myVideo.style.opacity = '1';
+      });
+      myVideo.play();
+      setTimeout(() => {
+        playButton.style.display = 'none';
+      }, 1500);
+    });
+
+    // Flag supaya transisi hanya dijalankan sekali
+    let transitionStarted = false;
+
+    myVideo.addEventListener('timeupdate', () => {
+      const duration = myVideo.duration;
+      const currentTime = myVideo.currentTime;
+
+      // Mulai transisi 1.5 detik sebelum video selesai
+      if (!transitionStarted && duration - currentTime <= 1.5) {
+        transitionStarted = true;
+
+        // Fade out video utama
+        myVideo.style.opacity = '0';
+
+        // Fade in background video
+        bgVideo.style.opacity = '1';
+
+        // Tampilkan tombol setelah 1.5 detik (durasi transisi)
+        setTimeout(() => {
+          myVideo.style.display = 'none';
+          playButton.style.display = 'block';
+          playButton.classList.remove('fade-out');
+        }, 1500);
+      }
+    });
+
+    // Untuk berjaga-jaga jika video langsung selesai sebelum transisi sempat jalan
+    myVideo.addEventListener('ended', () => {
+      if (!transitionStarted) {
+        bgVideo.style.opacity = '1';
+        myVideo.style.opacity = '0';
+        myVideo.style.display = 'none';
+        playButton.style.display = 'block';
+        playButton.classList.remove('fade-out');
+      }
+    });
+  </script>
+
+</body>
+</html>
