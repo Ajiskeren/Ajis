@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
   <title>Ajis lapar</title>
   <style>
     html, body {
@@ -81,24 +81,17 @@
       }, 1500);
     });
 
-    // Flag supaya transisi hanya dijalankan sekali
     let transitionStarted = false;
 
     myVideo.addEventListener('timeupdate', () => {
       const duration = myVideo.duration;
       const currentTime = myVideo.currentTime;
 
-      // Mulai transisi 1.5 detik sebelum video selesai
       if (!transitionStarted && duration - currentTime <= 1.5) {
         transitionStarted = true;
-
-        // Fade out video utama
         myVideo.style.opacity = '0';
-
-        // Fade in background video
         bgVideo.style.opacity = '1';
 
-        // Tampilkan tombol setelah 1.5 detik (durasi transisi)
         setTimeout(() => {
           myVideo.style.display = 'none';
           playButton.style.display = 'block';
@@ -107,7 +100,6 @@
       }
     });
 
-    // Untuk berjaga-jaga jika video langsung selesai sebelum transisi sempat jalan
     myVideo.addEventListener('ended', () => {
       if (!transitionStarted) {
         bgVideo.style.opacity = '1';
