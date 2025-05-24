@@ -29,20 +29,57 @@
       opacity: 0;
       z-index: 1;
     }
+
+    @keyframes pulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 10px cyan;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 30px cyan;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 10px cyan;
+      }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+      }
+    }
+
     #playButton {
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       z-index: 2;
-      padding: 14px 28px;
-      font-size: 20px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
       border: none;
-      border-radius: 8px;
-      background-color: cyan;
+      background: radial-gradient(circle at 30% 30%, #00ffff, #007777);
       color: black;
+      font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
-      transition: opacity 0.5s ease-in-out;
+      box-shadow: 0 0 20px #00ffffaa, 0 0 40px #00ffff44;
+      animation: fadeInUp 1s ease-out, pulse 2s infinite;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
+    #playButton:hover {
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff88;
+    }
+
     #playButton.fade-out {
       opacity: 0;
       pointer-events: none;
@@ -59,16 +96,26 @@
     <source src="video.mp4" type="video/mp4" />
   </video>
 
+  <!-- Tombol -->
   <button id="playButton">Klik</button>
+
+  <!-- Suara klik mouse -->
+  <audio id="clickSound" preload="auto">
+    <source src="mouse_click.wav" type="audio/wav">
+  </audio>
 
   <script>
     const bgVideo = document.getElementById('bgVideo');
     const myVideo = document.getElementById('myVideo');
     const playButton = document.getElementById('playButton');
+    const clickSound = document.getElementById('clickSound');
 
     myVideo.load();
 
     playButton.addEventListener('click', () => {
+      clickSound.currentTime = 0;
+      clickSound.play();
+
       playButton.classList.add('fade-out');
       bgVideo.style.opacity = '0';
       myVideo.style.display = 'block';
@@ -83,9 +130,9 @@
 
     let transitionStarted = false;
 
-myVideo.addEventListener('play', () => {
-  transitionStarted = false;
-});
+    myVideo.addEventListener('play', () => {
+      transitionStarted = false;
+    });
 
     myVideo.addEventListener('timeupdate', () => {
       const duration = myVideo.duration;
