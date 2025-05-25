@@ -29,6 +29,15 @@
       opacity: 0;
       z-index: 1;
     }
+    #rainCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 3;
+    }
 
     @keyframes pulse {
       0% {
@@ -96,14 +105,15 @@
     <source src="video.mp4" type="video/mp4" />
   </video>
 
-  <!-- Tombol -->
+  <canvas id="rainCanvas"></canvas>
+
   <button id="playButton">Klik</button>
 
-  <!-- Suara klik mouse -->
   <audio id="clickSound" preload="auto">
     <source src="mouse_click.wav" type="audio/wav">
   </audio>
 
+  <script src="https://cdn.jsdelivr.net/npm/rainyday.js@0.1.2/rainyday.min.js"></script>
   <script>
     const bgVideo = document.getElementById('bgVideo');
     const myVideo = document.getElementById('myVideo');
@@ -160,6 +170,19 @@
         playButton.classList.remove('fade-out');
       }
     });
+
+    window.onload = () => {
+      const canvas = document.getElementById('rainCanvas');
+      const engine = new RainyDay({
+        image: bgVideo,
+        parentElement: canvas,
+        blur: 10,
+        opacity: 1,
+        fps: 30
+      });
+      engine.trail = engine.TRAIL_SMUDGE;
+      engine.rain([ [1, 2, 800], [3, 3, 100] ], 100);
+    };
   </script>
 
 </body>
