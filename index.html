@@ -49,14 +49,21 @@
       height: 120px;
       border-radius: 50%;
       border: none;
-      background: radial-gradient(circle at 30% 30%, #00ffff, #007777);
+      background: radial-gradient(circle at 30% 30%, #cccccc, #888888);
       color: black;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 0 20px #00ffffaa, 0 0 40px #00ffff44;
+      box-shadow: 0 0 20px #888888aa, 0 0 40px #88888844;
       animation: fadeInUp 1s ease-out, pulse 2s infinite;
       transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.6s ease;
+      opacity: 0;
+    }
+
+    #startButton.fade-in,
+    #playButton.fade-in {
+      opacity: 1;
+      transition: opacity 1s ease;
     }
 
     #startButton.fade-out,
@@ -67,7 +74,7 @@
 
     #startButton:hover, #playButton:hover {
       transform: translate(-50%, -50%) scale(1.15);
-      box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff88;
+      box-shadow: 0 0 30px #888888, 0 0 60px #88888888;
     }
 
     #playButton {
@@ -75,9 +82,9 @@
     }
 
     @keyframes pulse {
-      0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px cyan; }
-      50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 30px cyan; }
-      100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px cyan; }
+      0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px #888; }
+      50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 30px #888; }
+      100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px #888; }
     }
 
     @keyframes fadeInUp {
@@ -131,7 +138,7 @@
     <source src="video.mp4" type="video/mp4" />
   </video>
 
-  <button id="startButton">Siap, San</button>
+  <button id="startButton">Siap</button>
   <button id="playButton">Klik</button>
 
   <audio id="clickSound" preload="auto">
@@ -192,6 +199,7 @@
         loading.classList.add('fade-out');
         setTimeout(() => {
           loading.style.display = 'none';
+          startButton.classList.add('fade-in');
         }, 1000);
       });
     });
@@ -211,7 +219,7 @@
         fadeInAudio(rainSound, 2000);
         playButton.style.display = 'block';
         playButton.classList.remove('fade-out');
-        playButton.style.opacity = '1';
+        playButton.classList.add('fade-in');
       }, 1500);
     });
 
@@ -220,6 +228,7 @@
       clickSound.play();
       fadeOutAudio(rainSound, 2000);
 
+      playButton.classList.remove('fade-in');
       playButton.classList.add('fade-out');
       bgVideo.style.opacity = '0';
       myVideo.style.display = 'block';
@@ -251,6 +260,7 @@
           myVideo.style.display = 'none';
           playButton.style.display = 'block';
           playButton.classList.remove('fade-out');
+          playButton.classList.add('fade-in');
           fadeInAudio(rainSound, 2000);
         }, 1500);
       }
@@ -263,6 +273,7 @@
         myVideo.style.display = 'none';
         playButton.style.display = 'block';
         playButton.classList.remove('fade-out');
+        playButton.classList.add('fade-in');
         fadeInAudio(rainSound, 2000);
       }
     });
