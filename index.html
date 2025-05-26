@@ -7,7 +7,7 @@
   <meta property="og:image" content="https://raw.githubusercontent.com/Ajiskeren/Ajis/main/Thumnails.png" />
   <meta property="og:url" content="https://ajis.vercel.app/" />
   <meta property="og:type" content="website" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Ajis lapar</title>
   <link rel="icon" href="favicon.gif" type="image/gif">
   <style>
@@ -36,54 +36,48 @@
       z-index: 1;
     }
 
-    @keyframes pulse {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        box-shadow: 0 0 10px cyan;
-      }
-      50% {
-        transform: translate(-50%, -50%) scale(1.1);
-        box-shadow: 0 0 30px cyan;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-        box-shadow: 0 0 10px cyan;
-      }
-    }
-
-    @keyframes fadeInUp {
-      0% {
-        transform: translate(-50%, -60%);
-        opacity: 0;
-      }
-      100% {
-        transform: translate(-50%, -50%);
-        opacity: 1;
-      }
-    }
-
-    #playButton {
+    #startButton, #playButton {
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 2;
-      width: 100px;
-      height: 100px;
+      z-index: 5;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       border: none;
       background: radial-gradient(circle at 30% 30%, #00ffff, #007777);
       color: black;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 0 20px #00ffffaa, 0 0 40px #00ffff44;
       animation: fadeInUp 1s ease-out, pulse 2s infinite;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.6s ease;
     }
 
-    #playButton:hover {
+    #startButton.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #startButton:hover, #playButton:hover {
       transform: translate(-50%, -50%) scale(1.15);
       box-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff88;
+    }
+
+    #playButton {
+      display: none;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px cyan; }
+      50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 30px cyan; }
+      100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px cyan; }
+    }
+
+    @keyframes fadeInUp {
+      0% { transform: translate(-50%, -60%); opacity: 0; }
+      100% { transform: translate(-50%, -50%); opacity: 1; }
     }
 
     #playButton.fade-out {
@@ -94,7 +88,7 @@
 </head>
 <body>
 
-  <video id="bgVideo" autoplay muted loop>
+  <video id="bgVideo" autoplay muted loop preload="auto">
     <source src="background.mp4" type="video/mp4" />
   </video>
 
@@ -102,6 +96,7 @@
     <source src="video.mp4" type="video/mp4" />
   </video>
 
+  <button id="startButton">Siap, San</button>
   <button id="playButton">Klik</button>
 
   <audio id="clickSound" preload="auto">
@@ -114,12 +109,12 @@
   <script>
     const bgVideo = document.getElementById('bgVideo');
     const myVideo = document.getElementById('myVideo');
+    const startButton = document.getElementById('startButton');
     const playButton = document.getElementById('playButton');
     const clickSound = document.getElementById('clickSound');
     const rainSound = document.getElementById('rainSound');
     rainSound.volume = 0;
 
-    // Fade utilities
     function fadeInAudio(audio, duration = 2000) {
       let step = 0.01;
       let interval = duration / (1 / step);
@@ -146,24 +141,29 @@
       }, interval);
     }
 
-    // Try autoplay rainSound silently
-    rainSound.play().then(() => {
-      fadeInAudio(rainSound, 2000);
-    }).catch(() => {
-      // Autoplay blocked, rainSound will start after interaction
-    });
+    // ⏳ Preload semua saat load awal
+    window.onload = () => {
+      myVideo.load();
+      rainSound.load();
+      clickSound.load();
+    };
 
-    myVideo.load();
+    startButton.addEventListener('click', () => {
+      // Transisi tombol keluar
+      startButton.classList.add('fade-out');
+
+      setTimeout(() => {
+        startButton.style.display = 'none';
+        rainSound.currentTime = 0;
+        rainSound.play();
+        fadeInAudio(rainSound, 2000);
+        playButton.style.display = 'block';
+      }, 600); // tunggu animasi fade-out selesai
+    });
 
     playButton.addEventListener('click', () => {
       clickSound.currentTime = 0;
       clickSound.play();
-
-      // Ensure rainSound starts from beginning if blocked earlier
-      if (rainSound.paused) {
-        rainSound.currentTime = 0;
-        rainSound.play();
-      }
       fadeOutAudio(rainSound, 2000);
 
       playButton.classList.add('fade-out');
