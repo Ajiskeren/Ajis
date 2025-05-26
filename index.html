@@ -16,6 +16,10 @@
       background: black;
       overflow: hidden;
       font-family: Arial, sans-serif;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
     body, video {
       width: 100vw;
@@ -59,11 +63,20 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.6s ease;
       opacity: 0;
       outline: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     #startButton:focus,
     #playButton:focus {
       outline: none;
+    }
+
+    #startButton::selection,
+    #playButton::selection {
+      background: transparent;
     }
 
     #startButton.fade-in,
