@@ -7,7 +7,7 @@
   <meta property="og:image" content="https://raw.githubusercontent.com/Ajiskeren/Ajis/main/Thumnails.png" />
   <meta property="og:url" content="https://ajis.vercel.app/" />
   <meta property="og:type" content="website" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ajis lapar</title>
   <link rel="icon" href="favicon.gif" type="image/gif">
   <style>
@@ -24,7 +24,7 @@
     video {
       position: fixed;
       top: 0; left: 0;
-      object-fit: contain;
+      object-fit: cover;
       background: black;
       opacity: 1;
       transition: opacity 1.5s ease-in-out;
@@ -34,15 +34,6 @@
       display: none;
       opacity: 0;
       z-index: 1;
-    }
-    #rainCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 3;
     }
 
     @keyframes pulse {
@@ -111,8 +102,6 @@
     <source src="video.mp4" type="video/mp4" />
   </video>
 
-  <canvas id="rainCanvas"></canvas>
-
   <button id="playButton">Klik</button>
 
   <audio id="clickSound" preload="auto">
@@ -122,7 +111,6 @@
     <source src="rain.mp3" type="audio/mpeg">
   </audio>
 
-  <script src="https://cdn.jsdelivr.net/npm/rainyday.js@0.1.2/rainyday.min.js"></script>
   <script>
     const bgVideo = document.getElementById('bgVideo');
     const myVideo = document.getElementById('myVideo');
@@ -211,19 +199,6 @@
         fadeInAudio(rainSound, 2000);
       }
     });
-
-    window.onload = () => {
-      const canvas = document.getElementById('rainCanvas');
-      const engine = new RainyDay({
-        image: bgVideo,
-        parentElement: canvas,
-        blur: 10,
-        opacity: 1,
-        fps: 30
-      });
-      engine.trail = engine.TRAIL_SMUDGE;
-      engine.rain([ [1, 2, 800], [3, 3, 100] ], 100);
-    };
   </script>
 </body>
 </html>
