@@ -117,9 +117,9 @@
     const playButton = document.getElementById('playButton');
     const clickSound = document.getElementById('clickSound');
     const rainSound = document.getElementById('rainSound');
-    rainSound.volume = 1;
-    rainSound.play();
+    rainSound.volume = 0;
 
+    // Fade utilities
     function fadeInAudio(audio, duration = 2000) {
       let step = 0.01;
       let interval = duration / (1 / step);
@@ -146,11 +146,24 @@
       }, interval);
     }
 
+    // Try autoplay rainSound silently
+    rainSound.play().then(() => {
+      fadeInAudio(rainSound, 2000);
+    }).catch(() => {
+      // Autoplay blocked, rainSound will start after interaction
+    });
+
     myVideo.load();
 
     playButton.addEventListener('click', () => {
       clickSound.currentTime = 0;
       clickSound.play();
+
+      // Ensure rainSound starts from beginning if blocked earlier
+      if (rainSound.paused) {
+        rainSound.currentTime = 0;
+        rainSound.play();
+      }
       fadeOutAudio(rainSound, 2000);
 
       playButton.classList.add('fade-out');
