@@ -122,7 +122,6 @@
     <source src="rain.mp3" type="audio/mpeg">
   </audio>
 
-
   <script src="https://cdn.jsdelivr.net/npm/rainyday.js@0.1.2/rainyday.min.js"></script>
   <script>
     const bgVideo = document.getElementById('bgVideo');
@@ -130,17 +129,18 @@
     const playButton = document.getElementById('playButton');
     const clickSound = document.getElementById('clickSound');
     const rainSound = document.getElementById('rainSound');
-    rainSound.volume = 0;
+    rainSound.volume = 1;
     rainSound.play();
 
     function fadeInAudio(audio, duration = 2000) {
       let step = 0.01;
       let interval = duration / (1 / step);
-      let fade = setInterval(() => {
+      clearInterval(audio.fadeTimer);
+      audio.fadeTimer = setInterval(() => {
         if (audio.volume < 1) {
           audio.volume = Math.min(audio.volume + step, 1);
         } else {
-          clearInterval(fade);
+          clearInterval(audio.fadeTimer);
         }
       }, interval);
     }
@@ -148,25 +148,22 @@
     function fadeOutAudio(audio, duration = 2000) {
       let step = 0.01;
       let interval = duration / (1 / step);
-      let fade = setInterval(() => {
+      clearInterval(audio.fadeTimer);
+      audio.fadeTimer = setInterval(() => {
         if (audio.volume > 0) {
           audio.volume = Math.max(audio.volume - step, 0);
         } else {
-          clearInterval(fade);
-          audio.pause();
+          clearInterval(audio.fadeTimer);
         }
       }, interval);
     }
-
-    fadeInAudio(rainSound);
-
 
     myVideo.load();
 
     playButton.addEventListener('click', () => {
       clickSound.currentTime = 0;
       clickSound.play();
-      fadeOutAudio(rainSound);
+      fadeOutAudio(rainSound, 2000);
 
       playButton.classList.add('fade-out');
       bgVideo.style.opacity = '0';
@@ -199,8 +196,7 @@
           myVideo.style.display = 'none';
           playButton.style.display = 'block';
           playButton.classList.remove('fade-out');
-    rainSound.play();
-    fadeInAudio(rainSound);
+          fadeInAudio(rainSound, 2000);
         }, 1500);
       }
     });
@@ -212,8 +208,7 @@
         myVideo.style.display = 'none';
         playButton.style.display = 'block';
         playButton.classList.remove('fade-out');
-    rainSound.play();
-    fadeInAudio(rainSound);
+        fadeInAudio(rainSound, 2000);
       }
     });
 
@@ -230,6 +225,5 @@
       engine.rain([ [1, 2, 800], [3, 3, 100] ], 100);
     };
   </script>
-
 </body>
 </html>
